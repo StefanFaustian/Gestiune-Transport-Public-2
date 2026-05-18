@@ -16,9 +16,9 @@ class Manager {
 public:
     Manager(const Manager&) = delete;
     Manager& operator=(const Manager&) = delete;
-    static Manager& getManager() {
-        static Manager manager("STA SA");
-        return manager;
+    static Manager& getInstance() {
+        static Manager instance("STA SA");
+        return instance;
     }
 
     void afis() const;

@@ -6,7 +6,7 @@
 
 int main() {
 
-    Manager& SA = Manager::getManager();
+    Manager& SA = Manager::getInstance();
     try {
         SA.incarcaDepouri("Depouri.txt");
         SA.incarcaLinii("Linii.txt");
