@@ -4,6 +4,7 @@
 #include "Tramvai.h"
 #include "Troleibuz.h"
 #include "Utilitare.h"
+#include "VehiculFactory.h"
 #include <fstream>
 #include <sstream>
 #include <algorithm> // pentru transform
@@ -140,7 +141,7 @@ void Manager::incarcaFlota(Depou<Vehicul>& depou, const std::string& numeFisier)
         trim(rand);
         if (rand.empty() || rand[0] == '#') continue;
 
-        std::string tipVehicul, nrInmatriculare, capacitateStr, kmStr;
+        std::string tipVehicul, nrInmatriculare, capacitateStr, kmStr, atributSpecific;
         try {
             std::stringstream randParse(rand);
             if (!(std::getline(randParse, tipVehicul, ',') &&
@@ -148,54 +149,23 @@ void Manager::incarcaFlota(Depou<Vehicul>& depou, const std::string& numeFisier)
                   std::getline(randParse, capacitateStr, ','))) {
                 throw EroareFisier("Citirea a esuat pentru ca linia " + rand + " nu respecta formatul de input.");
             }
+
+            trim(tipVehicul), trim(nrInmatriculare), trim(capacitateStr), trim(kmStr);
+            // Tratare cazuri case-sensitive
+            std::transform(nrInmatriculare.begin(),nrInmatriculare.end(),nrInmatriculare.begin(),toupper);
             if (numereInmatriculate.count(nrInmatriculare))
                 throw EroareOperatiune("Numarul de inmatriculare " + nrInmatriculare + " este deja folosit.");
 
-
-            trim(tipVehicul), trim(nrInmatriculare), trim(capacitateStr), trim(kmStr);
+            if (!std::getline(randParse, atributSpecific, ','))
+                throw EroareFisier("Lipseste atributul specific pe linia: " + rand);
+            trim(atributSpecific);
+            std::getline(randParse, kmStr, ',');
             int capacitate = safeStoi(capacitateStr,"capacitate vehicul");
+            int km = kmStr.empty() ? 0 : safeStoi(kmStr, "kilometri la bord");
 
-            // Tratare cazuri case-sensitive
-            std::transform(tipVehicul.begin(),tipVehicul.end(),tipVehicul.begin(),tolower);
-            std::transform(nrInmatriculare.begin(),nrInmatriculare.end(),nrInmatriculare.begin(),toupper);
+            std::shared_ptr<Vehicul> vehicul = VehiculFactory::creeazaVehicul(
+                tipVehicul,nrInmatriculare,capacitate,atributSpecific,km);
 
-            std::shared_ptr<Vehicul> vehicul = nullptr;
-            if (tipVehicul == "autobuz") {
-                std::string motor;
-                if (!std::getline(randParse, motor, ','))
-                    throw EroareFisier("Citirea a esuat pentru ca linia " + rand + " nu respecta formatul de input pentru autobuze.");
-
-                trim(motor);
-                std::getline(randParse, kmStr, ',');
-                int km = kmStr.empty() ? 0 : safeStoi(kmStr, "kilometri la bord");
-                vehicul = std::make_shared<Autobuz>(nrInmatriculare,capacitate,motor,km);
-
-            } else if (tipVehicul == "tramvai") {
-                std::string nrVagoaneStr;
-                if (!std::getline(randParse, nrVagoaneStr, ','))
-                    throw EroareFisier("Citirea a esuat pentru ca linia " + rand + " nu respecta formatul de input pentru tramvaie.");
-
-                trim(nrVagoaneStr);
-                int nrVagoane = safeStoi(nrVagoaneStr,"numar vagoane tramvai");
-                std::getline(randParse, kmStr, ',');
-                int km = kmStr.empty() ? 0 : safeStoi(kmStr, "kilometri la bord");
-                vehicul = std::make_shared<Tramvai>(nrInmatriculare,capacitate,nrVagoane,km);
-
-            } else if (tipVehicul == "troleibuz") {
-                std::string baterieStr;
-                if (!std::getline(randParse, baterieStr, ','))
-                    throw EroareFisier("Citirea a esuat pentru ca linia " + rand + " nu respecta formatul de input pentru troleibuze.");
-
-                trim(baterieStr);
-                std::transform(baterieStr.begin(), baterieStr.end(), baterieStr.begin(), tolower);
-                bool baterie = (baterieStr == "true" || baterieStr == "1");
-                std::getline(randParse, kmStr, ',');
-                int km = kmStr.empty() ? 0 : safeStoi(kmStr, "kilometri la bord");
-                vehicul = std::make_shared<Troleibuz>(nrInmatriculare,capacitate,baterie,km);
-
-            } else {
-                throw EroareFisier("Tip de vehicul neidentificat: " + tipVehicul + '\n');
-            }
 
             depou.adaugaVehicul(vehicul);
             numereInmatriculate.insert(nrInmatriculare);

@@ -22,7 +22,8 @@ add_executable(Tema2
         Linie.cpp
         Linie.h
         Meniu.cpp
-        Meniu.h)
+        Meniu.h
+        VehiculFactory.h)
 
 # Preia toate fisierele cu extensia .txt
 file(GLOB DATE_TEXT "${CMAKE_CURRENT_SOURCE_DIR}/*.txt")
