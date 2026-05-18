@@ -6,7 +6,7 @@
 
 int main() {
 
-    Manager SA("STB SA");
+    Manager& SA = Manager::getManager();
     try {
         SA.incarcaDepouri("Depouri.txt");
         SA.incarcaLinii("Linii.txt");

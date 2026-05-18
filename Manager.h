@@ -12,9 +12,16 @@ class Manager {
     std::vector<Depou<Vehicul>> depouri;
     std::vector<Linie> linii;
     void incarcaFlota(Depou<Vehicul>& depou, const std::string& numeFisier);
+    explicit Manager(const std::string& nume = "STB SA");
 public:
+    Manager(const Manager&) = delete;
+    Manager& operator=(const Manager&) = delete;
+    static Manager& getManager() {
+        static Manager manager("STA SA");
+        return manager;
+    }
+
     void afis() const;
-    explicit Manager(const std::string& nume);
     std::shared_ptr<Vehicul> gasesteVehiculGlobal(const std::string& nrInmatriculare);
     void raportReviziiUrgente();
     void trimiteInService(const std::string& nrInmatriculare);
