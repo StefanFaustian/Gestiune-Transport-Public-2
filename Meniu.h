@@ -7,10 +7,10 @@ class Meniu {
     void afiseazaOptiuni() const;
     std::string alegeVehiculDinDepou() const;
     std::string alegeLinie() const;
-    void trateazaAdaugareVehicul();
-    void trateazaTrimitereInService();
+    void trateazaAdaugareVehicul() const;
+    void trateazaTrimitereInService() const;
 
 public:
     explicit Meniu(Manager& m);
-    void start();
+    void start() const;
 };

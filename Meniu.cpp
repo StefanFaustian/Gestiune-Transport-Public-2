@@ -1,9 +1,10 @@
 #include "Meniu.h"
-#include "Autobuz.h"
-#include "Tramvai.h"
-#include "Troleibuz.h"
+// #include "Autobuz.h"
+// #include "Tramvai.h"
+// #include "Troleibuz.h"
 #include "Depou.h"
 #include "Exceptii.h"
+#include "VehiculBuilder.h"
 #include <iostream>
 
 Meniu::Meniu(Manager& m) : manager(m) {}
@@ -62,7 +63,7 @@ std::string Meniu::alegeLinie() const {
     return linii[optLinie - 1].getIndicativ();
 }
 
-void Meniu::trateazaAdaugareVehicul() {
+void Meniu::trateazaAdaugareVehicul() const {
     const auto& depouri = manager.getDepouri();
     std::string tip, nrInmat, atributSpecific;
     int capacitate, km;
@@ -86,29 +87,28 @@ void Meniu::trateazaAdaugareVehicul() {
     std::cout << "Kilometraj curent: ";
     std::cin >> km;
 
-    std::shared_ptr<Vehicul> v = nullptr;
+    std::transform(tip.begin(), tip.end(), tip.begin(), tolower);
 
-    if (tip == "autobuz") {
+    if (tip == "autobuz")
         std::cout << "Tip motor (diesel/electric): ";
-        std::cin >> atributSpecific;
-        v = std::make_shared<Autobuz>(nrInmat, capacitate, atributSpecific, km);
-    } else if (tip == "tramvai") {
+    else if (tip == "tramvai")
         std::cout << "Numar vagoane: ";
-        std::cin >> atributSpecific;
-        v = std::make_shared<Tramvai>(nrInmat, capacitate, std::stoi(atributSpecific), km);
-    } else if (tip == "troleibuz") {
-        std::cout << "Are baterie (1 pentru Da, 0 pentru Nu): ";
-        std::cin >> atributSpecific;
-        bool areBat = (atributSpecific == "1");
-        v = std::make_shared<Troleibuz>(nrInmat, capacitate, areBat, km);
-    } else {
+    else if (tip == "troleibuz")
+        std::cout << "Are baterie (1/true pentru Da, 0/false pentru Nu): ";
+    else
         throw EroareOperatiune("Tip vehicul necunoscut!");
-    }
-
+    std::cin >> atributSpecific;
+    VehiculBuilder asamblare;
+    std::shared_ptr<Vehicul> v = asamblare.setTip(tip)
+                                          .setNr(nrInmat)
+                                          .setCapacitate(capacitate)
+                                          .setKm(km)
+                                          .setAtributSpecific(atributSpecific)
+                                          .build();
     manager.adaugaVehiculNou(numeDepou, v);
 }
 
-void Meniu::trateazaTrimitereInService() {
+void Meniu::trateazaTrimitereInService() const {
     std::vector<std::string> masiniFaraRevizie;
     const auto& depouri = manager.getDepouri();
     for (const auto& depou : depouri) {
@@ -138,7 +138,7 @@ void Meniu::trateazaTrimitereInService() {
     manager.trimiteInService(masiniFaraRevizie[alegere - 1]);
 }
 
-void Meniu::start() {
+void Meniu::start() const {
     bool activ = true;
     while (activ) {
         afiseazaOptiuni();
