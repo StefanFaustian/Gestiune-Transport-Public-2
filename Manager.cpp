@@ -79,7 +79,7 @@ void Manager::incarcaDepouri(const std::string& numeFisier) {
         trim(numeDepou), trim(capacitateStr), trim(numeFisierSursa);
         try {
             int capacitate = safeStoi(capacitateStr,"capacitate depou");
-            depouri.emplace_back(Depou(numeDepou,capacitate));
+            depouri.emplace_back(Depou<Vehicul>(numeDepou,capacitate));
             incarcaFlota(depouri.back(),numeFisierSursa);
         } catch (const EroareGenerala& err) {
             std::cerr << err.what() << '\n';
@@ -87,7 +87,7 @@ void Manager::incarcaDepouri(const std::string& numeFisier) {
     }
 }
 
-void Manager::adaugaVehiculNou(const std::string& numeDepou, const std::shared_ptr<Vehicul> vehiculNou) {
+void Manager::adaugaVehiculNou(const std::string& numeDepou, const std::shared_ptr<Vehicul>& vehiculNou) {
     const std::string nr = vehiculNou->getNrInmatriculare();
 
     if (numereInmatriculate.count(nr)) {
@@ -95,7 +95,7 @@ void Manager::adaugaVehiculNou(const std::string& numeDepou, const std::shared_p
     }
 
     const auto itDepou = std::find_if(depouri.begin(), depouri.end(),
-        [&numeDepou](const Depou& d) { return d.getNume() == numeDepou; });
+        [&numeDepou](const Depou<Vehicul>& d) { return d.getNume() == numeDepou; });
 
     if (itDepou == depouri.end())
         throw EroareOperatiune("Depoul '" + numeDepou + "' nu există!");
@@ -128,7 +128,7 @@ void Manager::stergeVehicul(const std::string& nrInmatriculare) {
     }
 }
 
-void Manager::incarcaFlota(Depou& depou, const std::string& numeFisier) {
+void Manager::incarcaFlota(Depou<Vehicul>& depou, const std::string& numeFisier) {
     std::ifstream fin(numeFisier);
     if (!fin.is_open()) {
         throw EroareOperatiune("Fisierul " + numeFisier + " nu poate fi gasit.");
