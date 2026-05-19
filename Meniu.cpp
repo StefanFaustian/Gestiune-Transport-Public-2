@@ -99,7 +99,7 @@ void Meniu::trateazaAdaugareVehicul() const {
         throw EroareOperatiune("Tip vehicul necunoscut!");
     std::cin >> atributSpecific;
     VehiculBuilder asamblare;
-    std::shared_ptr<Vehicul> v = asamblare.setTip(tip)
+    const std::shared_ptr<Vehicul> v = asamblare.setTip(tip)
                                           .setNr(nrInmat)
                                           .setCapacitate(capacitate)
                                           .setKm(km)

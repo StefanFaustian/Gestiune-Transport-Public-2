@@ -33,6 +33,14 @@ Aplicația ilustrează următoarele funcționalități printr-un meniu interacti
 * efectuarea operațiunilor de mentenanță prin trimiterea unui vehicul defect în service (operațiune ce resetează contorul de kilometri pentru revizie la valoarea kilometrajului actual).
 * tratarea excepțiilor (ex: format incorect pentru numerele de înmatriculare, număr de vagoane peste limita admisă, verificarea duplicatelor).
 
+Clasa `Depou` a fost aleasă pentru a fi implementată ca o clasă șablon (template), având ca motivație faptul că aceasta este singura clasă de tip colecție care este suficient de izolată pentru a fi transformată în template fără a distruge polimorfismul sau ierarhia clasei `Vehicul`.
+Din acest moment, funcțiile `friend` definite anterior (`swap` și supraîncărcarea operatorului `<<`) vor deveni la rândul lor de tip template.
+
+Au fost abordate trei tipuri de *Design Patterns*: 
+* **Factory** - prin intermediul clasei `VehiculFactory` a fost preluată responsabilitatea de a analiza datele citite din fișier de la `Manager`, vehiculele sunt create de clasa delegată, Managerul având acum unicul rol de a insera vehiculul creat către depoul corespunzător.
+* **Singleton** - clasa `Manager` devine singleton, deci constructorul ei rămâne privat, iar instanțierea se realizează o singură dată prin metoda statică `getInstance()`.
+* **Builder** - folosit pentru adăugarea vehiculelor prin intermediul meniului interactiv. Clasa `VehiculBuilder` permite stocarea datelor despre un vehicul, acesta fiind asamblat etapizat prin apeluri înlănțuite, construirea fiind realizată polimorfic la apelul metodei `build()`.
+
 ## Resurse extra
 1. https://www.geeksforgeeks.org/cpp/stdfind_if-stdfind_if_not-in-c/ - pentru funcția ```std::find_if()```
 2. https://www.w3schools.com/cpp/cpp_functions_lambda.asp - pentru funcțiile lambda

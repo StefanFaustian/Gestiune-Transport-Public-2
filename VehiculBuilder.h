@@ -28,12 +28,12 @@ public:
         return *this;
     }
 
-    VehiculBuilder& setCapacitate(int cap) {
+    VehiculBuilder& setCapacitate(const int cap) {
         capacitate = cap;
         return *this;
     }
 
-    VehiculBuilder& setKm(int km_) {
+    VehiculBuilder& setKm(const int km_) {
         km = km_;
         return *this;
     }
