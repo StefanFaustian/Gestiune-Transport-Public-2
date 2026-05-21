@@ -12,8 +12,8 @@
 
 class VehiculFactory {
 public:
-    static std::shared_ptr<Vehicul> creeazaVehicul(std::string tipVehicul,
-    const std::string& nr, int cap, std::string paramSpecific, int km = 0) {
+    static std::shared_ptr<Vehicul> creeazaVehicul(std::string& tipVehicul,
+    const std::string& nr, int cap, std::string& paramSpecific, int km = 0) {
         std::transform(tipVehicul.begin(),tipVehicul.end(),tipVehicul.begin(),tolower);
 
         if (tipVehicul == "autobuz") {
