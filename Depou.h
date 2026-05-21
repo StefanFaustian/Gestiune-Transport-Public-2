@@ -32,8 +32,11 @@ public:
     void adaugaVehicul(std::shared_ptr<T> v);
     bool eliminaVehicul(const std::string& nr);
     std::shared_ptr<T> cautaVehicul(const std::string& nrInmatriculare);
-    friend std::ostream& operator<< <>(std::ostream& out, const Depou& d);
-    friend void swap <>(Depou<T>& a, Depou<T>& b) noexcept;
+    template<typename U>
+    friend std::ostream& operator<<(std::ostream& out, const Depou<U>& d);
+
+    template<typename U>
+    friend void swap(Depou<U>& a, Depou<U>& b) noexcept;
 
     // Getters
     const std::string& getNume() const { return nume; }
